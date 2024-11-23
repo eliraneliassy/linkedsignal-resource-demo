@@ -1,4 +1,13 @@
-import {ChangeDetectionStrategy, Component, effect, inject, Signal, signal} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  linkedSignal,
+  Signal,
+  signal, WritableSignal
+} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 import {PostService} from './post.service';
 import {User} from './user.interface';
@@ -25,11 +34,21 @@ export class AppComponent {
   selectedUser = signal<User | undefined>(undefined);
 
   posts = signal<Post[]>([]);
-  selectedPost = signal<Post | undefined>(undefined);
+  // selectedPost = signal<Post | undefined>(undefined);
+  // selectedPost = computed(() => {
+  //   this.selectedUser();
+  //
+  //   return undefined;
+  // })
+  selectedPost: WritableSignal<Post | undefined> = linkedSignal({
+    source: this.selectedUser,
+    computation: () => undefined
+  })
   loadingPosts = signal<boolean>(false);
 
   comments = signal<PostComment[]>([]);
   loadingComments = signal<boolean>(false);
+
 
 
   constructor() {
@@ -38,6 +57,8 @@ export class AppComponent {
     effect(() => {
 
       this.selectedUser();
+
+      this.selectedPost.set(undefined)
 
       if (this.selectedUser()?.id) {
         this.loadingPosts.set(true);
