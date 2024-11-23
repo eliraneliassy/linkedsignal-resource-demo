@@ -1,0 +1,9 @@
+
+<mat-list role="list">
+  @for(user of users(); track user.id) {
+    <mat-list-item role="listitem" (click)="selectUser(user)"
+                   [class]="{'active': user.id === selectedUser()?.id}">{{user.name}}</mat-list-item>
+  }
+
+
+</mat-list>

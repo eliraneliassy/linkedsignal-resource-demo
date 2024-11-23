@@ -1,0 +1,15 @@
+@if (!loadingPosts()) {
+  <mat-list role="list">
+    @for (post of posts(); track post.id) {
+
+      <mat-list-item role="listitem" (click)="selectPost(post)"
+                     [class]="{'active': post.id === selectedPost()?.id}">{{ post.body }}
+      </mat-list-item>
+
+
+    }
+  </mat-list>
+} @else {
+  <mat-spinner></mat-spinner>
+
+}
