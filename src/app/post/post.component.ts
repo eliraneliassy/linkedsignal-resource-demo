@@ -19,6 +19,6 @@ import {MatProgressSpinner} from '@angular/material/progress-spinner';
 })
 export class PostComponent {
   post = input<Post | undefined>(undefined);
-  comments = input<PostComment[]>([]);
+  comments = input<PostComment[]>();
   loadingComments = input<boolean>(false);
 }

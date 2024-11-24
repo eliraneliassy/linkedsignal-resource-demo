@@ -1,8 +1,17 @@
-import {ChangeDetectionStrategy, Component, effect, inject, Signal, signal} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+  linkedSignal, resource,
+  Signal,
+  signal,
+  WritableSignal
+} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 import {PostService} from './post.service';
 import {User} from './user.interface';
-import {toSignal} from '@angular/core/rxjs-interop';
+import {rxResource, toSignal} from '@angular/core/rxjs-interop';
 import {JsonPipe} from '@angular/common';
 import {MatToolbar} from '@angular/material/toolbar';
 import {UsersComponent} from './users/users.component';
@@ -10,6 +19,8 @@ import {PostsComponent} from './posts/posts.component';
 import {PostComponent} from './post/post.component';
 import {Post} from './post.interface';
 import {PostComment} from './comment.interface';
+import {of} from 'rxjs';
+import {Comment} from '@angular/compiler';
 
 @Component({
   selector: 'app-root',
@@ -21,46 +32,28 @@ import {PostComment} from './comment.interface';
 export class AppComponent {
   postService = inject(PostService);
 
-  users: Signal<User[] | undefined> = signal<User[]>([]);
+
   selectedUser = signal<User | undefined>(undefined);
 
-  posts = signal<Post[]>([]);
-  selectedPost = signal<Post | undefined>(undefined);
-  loadingPosts = signal<boolean>(false);
-
-  comments = signal<PostComment[]>([]);
-  loadingComments = signal<boolean>(false);
+  selectedPost: WritableSignal<Post | undefined> = linkedSignal({
+    source: () => this.selectedUser(),
+    computation: () => undefined
+  });
 
 
-  constructor() {
-    this.users = toSignal(this.postService.getUsers());
+    usersResource = resource<User[], unknown>({
+      loader: () => fetch(`https://jsonplaceholder.typicode.com/users`).then(res => res.json()) as Promise<User[]>// this.postService.getUsers()
+    })
 
-    effect(() => {
+    postsResource = rxResource<Post[], User | undefined>({
+      request: () => this.selectedUser(),
+      loader: ({request: selectedUser}) => selectedUser ? this.postService.getPosts(selectedUser.id) : of([])
+    })
 
-      const selectedUser = this.selectedUser();
+    commentsResource = rxResource<PostComment[], Post | undefined>({
+      request: () => this.selectedPost(),
+      loader: ({request: selectedPost}) => selectedPost ? this.postService.getComments(selectedPost.id) : of([])
+    } )
 
-      if (selectedUser) {
-        this.loadingPosts.set(true);
-        this.postService.getPosts(selectedUser.id).subscribe((posts) => {
-            this.posts.set(posts);
-            this.loadingPosts.set(false);
-          }
-        )
-      }
 
-    });
-
-    effect(() => {
-      const selectedPost =  this.selectedPost();
-
-      if (selectedPost) {
-        this.loadingComments.set(true);
-        this.postService.getComments(selectedPost.id).subscribe((comments) => {
-          this.loadingComments.set(false);
-          this.comments.set(comments);
-        })
-      }
-
-    });
-  }
 }

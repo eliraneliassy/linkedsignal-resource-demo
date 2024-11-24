@@ -5,13 +5,13 @@
 </mat-toolbar>
 
 <div class="container">
-  <app-users class="grid-item" [users]="users()" [(selectedUser)]="selectedUser"></app-users>
+  <app-users class="grid-item" [users]="usersResource.value()" [(selectedUser)]="selectedUser"></app-users>
 
-  <app-posts class="grid-item" [posts]="posts()" [(selectedPost)]="selectedPost"
-             [loadingPosts]="loadingPosts()"></app-posts>
+  <app-posts class="grid-item" [posts]="postsResource.value()" [(selectedPost)]="selectedPost"
+             [loadingPosts]="postsResource.isLoading()"></app-posts>
 
-  <app-post class="grid-item" [comments]="comments()" [post]="selectedPost()"
-            [loadingComments]="loadingComments()"></app-post>
+  <app-post class="grid-item" [comments]="commentsResource.value()" [post]="selectedPost()"
+            [loadingComments]="commentsResource.isLoading()"></app-post>
 </div>
 
 
