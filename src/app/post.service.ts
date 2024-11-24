@@ -19,9 +19,8 @@ export class PostService {
   }
 
   getPosts(userId: number): Observable<Post[]> {
-    return this.httpClient.get<Post[]>(`${this.BASE_URL}/posts`).pipe(
-      map((posts) => posts.filter(post => post.userId ===userId))
-    );
+    return this.httpClient.get<Post[]>(`${this.BASE_URL}/users/${userId}/posts`);
+
   }
 
   getComments(postId: number): Observable<PostComment[]> {
