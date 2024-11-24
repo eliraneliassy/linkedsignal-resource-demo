@@ -37,11 +37,11 @@ export class AppComponent {
 
     effect(() => {
 
-      this.selectedUser();
+      const selectedUser = this.selectedUser();
 
-      if (this.selectedUser()?.id) {
+      if (selectedUser) {
         this.loadingPosts.set(true);
-        this.postService.getPosts(this.selectedUser()?.id || 0).subscribe((posts) => {
+        this.postService.getPosts(selectedUser.id).subscribe((posts) => {
             this.posts.set(posts);
             this.loadingPosts.set(false);
           }
@@ -51,11 +51,11 @@ export class AppComponent {
     });
 
     effect(() => {
-      this.selectedPost();
+      const selectedPost =  this.selectedPost();
 
-      if (this.selectedPost()?.id) {
+      if (selectedPost) {
         this.loadingComments.set(true);
-        this.postService.getComments(this.selectedPost()?.id || 0).subscribe((comments) => {
+        this.postService.getComments(selectedPost.id).subscribe((comments) => {
           this.loadingComments.set(false);
           this.comments.set(comments);
         })

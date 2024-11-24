@@ -8,10 +8,13 @@
 
       <mat-card-content>
         @for (comment of comments(); track comment.id) {
+          <hr>
           <p><b>By:</b> {{ comment.email }}</p>
           <p>
-            {{ comment.body }}
+            <b>Comment: </b> {{ comment.body }}
           </p>
+
+
         }
       </mat-card-content>
 
