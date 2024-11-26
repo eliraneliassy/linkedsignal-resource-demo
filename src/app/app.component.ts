@@ -32,35 +32,5 @@ export class AppComponent {
   loadingComments = signal<boolean>(false);
 
 
-  constructor() {
-    this.users = toSignal(this.postService.getUsers());
 
-    effect(() => {
-
-      const selectedUser = this.selectedUser();
-
-      if (selectedUser) {
-        this.loadingPosts.set(true);
-        this.postService.getPosts(selectedUser.id).subscribe((posts) => {
-            this.posts.set(posts);
-            this.loadingPosts.set(false);
-          }
-        )
-      }
-
-    });
-
-    effect(() => {
-      const selectedPost =  this.selectedPost();
-
-      if (selectedPost) {
-        this.loadingComments.set(true);
-        this.postService.getComments(selectedPost.id).subscribe((comments) => {
-          this.loadingComments.set(false);
-          this.comments.set(comments);
-        })
-      }
-
-    });
-  }
 }

@@ -11,7 +11,7 @@ import {MatProgressSpinner} from '@angular/material/progress-spinner';
   styleUrl: './posts.component.scss'
 })
 export class PostsComponent {
-  posts = input<Post[]>([]);
+  posts = input<Post[]>();
   selectedPost = model<Post | undefined>(undefined);
   loadingPosts = input<boolean>(false);
 
